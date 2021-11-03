@@ -143,7 +143,7 @@ def encrypt_mh(message, public_key):
     cypher = [] 
     for c in message:
         a = utils.byte_to_bits(c)
-        cypher.append(sum([a_i + b_i for a_i, b_i in zip(a, public_key)]))
+        cypher.append(sum([a_i * b_i for a_i, b_i in zip(a, public_key)]))
 
     return cypher
 
@@ -180,11 +180,13 @@ def decrypt_mh(message, private_key):
         plain.append(sum([2**(w_length-j) for j in indices]))
         indices = []
 
-    return [chr(x) for x in plain]
+    return ''.join([chr(x) for x in plain])
 
 def main():
+    random.seed(42)
     pr_k = generate_private_key() 
     pub_k = create_public_key(pr_k)
+    print(f"Private Key: {pr_k}")
     s = "HELLO"
     to_encrypt = [ord(c) for c in s]
     cipher = encrypt_mh(to_encrypt, pub_k)
